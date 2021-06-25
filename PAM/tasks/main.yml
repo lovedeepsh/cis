@@ -1,0 +1,61 @@
+---
+# tasks file for PAM
+- name: Ensure PAM is installed
+  yum:
+    name: pam
+    state: latest
+  
+- name: Ensure password creation requirements are configured
+  lineinfile:
+    path: "{{ pwquality_conf }}"
+    line: "{{ item }}"
+    insertafter: EOF
+    state: present
+  with_file:
+    - passwd_limits
+
+- name: Ensure lockout for failed password attempts is configured & also ensuring password reuse is limited
+  lineinfile: 
+    path: "{{ paswd_auth }}"
+    line: "{{ item }}"
+    insertafter: EOF
+    state: present
+  with_file:
+    - password_auth1
+
+- name: Ensure lockout for failed password attempts is configured & also ensuring password reuse is limited
+  lineinfile:
+    path: "{{ system_auth }}"
+    line: "{{ item }}"
+    insertafter: EOF
+    state: present
+  with_file:
+    - password_auth1
+
+- name: Ensure password expiration is 365 days or less
+  lineinfile:
+    path: "{{ login_defs }}"
+    regexp: '^(.*)PASS_MAX_DAYS   99999(.*)$'
+    line: PASS_MAX_DAYS   365 
+
+- name: Ensure inactive password lock is 30 days or less
+  shell: useradd -D -f "{{ days }}"
+
+- name: Ensure default group for the root account is GID 0
+  shell: usermod -g "{{ GID }}" "{{ admin_user }}"
+
+- name: Ensure root login is restricted to system console
+  lineinfile:
+    path: "{{ securetty }}"
+    regexp: "{{ item }}"
+    state: absent
+  with_file:
+    - Define_console_restriction
+
+- name: Ensure access to the su command is restricted  
+  lineinfile:
+    path: "{{ su }}"
+    line: auth required pam_wheel.so
+    insertafter: EOF
+    state: present
+...

@@ -1,0 +1,32 @@
+---
+- name: Ensuring ntp is installed.
+  yum:
+     name: ntp
+     state: latest
+
+- name: Ensuring that ntp is configured
+  lineinfile:
+    path: "{{ ntp }}"
+    regexp: "{{ item[0] }}"
+    line: "{{ item[1] }}"
+    insertafter: EOF
+    state: present
+  with_file:
+     - pool
+     - pool_server
+  
+- name: Ensuring that ntp is configured
+  lineinfile:
+    path: "{{ ntp }}"
+    insertafter: '^restrict ::1'
+    line: "{{ item }}"
+  with_file:
+    - restrict
+
+- name: Finalizing configuration of ntp
+  lineinfile: 
+    path: "{{ sysconfig  }}"
+    line: OPTIONS="-u ntp:ntp"
+    insertafter: EOF
+    state: present
+...

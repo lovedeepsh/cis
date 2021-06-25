@@ -1,0 +1,45 @@
+---
+# tasks file for Services
+- name: Ensuring that chargen, daytime, echo, time are not active.
+  action: command {{ item }}  
+  ignore_errors: yes
+  with_file:
+    - basic_services  
+
+- name: Ensuring that rsh, talk, telnet-server, tftp, rsync are not enabled.
+  service:
+     name: "{{ item }}"
+     enabled: no
+  ignore_errors: yes
+  with_file:
+    - network_services
+
+- name: Ensuring ntp is installed and configured.
+  include: ntp.yml 
+
+- name: Ensuring chrony is installed and configured.
+  include: chrony.yml
+
+- name: Ensuring X Windows is not installed on machine.
+  shell: rpm -qa xorg-x11*
+  register: result
+ 
+- name: Removing Xwindows only if already installed.
+  yum:
+     name: xorg-x11*
+     state: absent
+  when: result.stdout != ''
+
+- name: Ensuring that Avahi is not installed.
+  yum:
+     name: avahi
+     state: absent
+
+- name: Ensuring that DHCP, LDAP, DNS, FTP, HTTP, POP3, IMAP, Samba, NFS server are not enabled.
+  service: 
+     name: "{{ item }}"
+     enabled: no
+  ignore_errors: yes
+  with_file:
+     - protocol_services
+...

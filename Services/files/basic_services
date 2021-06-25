@@ -1,0 +1,8 @@
+chkconfig chargen-dgram off
+chkconfig chargen-stream off
+chkconfig daytime-dgram off
+chkconfig daytime-stream off
+chkconfig echo-dgram off
+chkconfig echo-stream off
+chkconfig time-dgram off
+chkconfig time-stream off

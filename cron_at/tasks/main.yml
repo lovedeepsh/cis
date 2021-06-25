@@ -1,0 +1,33 @@
+---
+# tasks file for AAA
+- name: Ensuring cron daemon is enabled
+  service:
+    name: crond
+    enabled: no
+
+- name: Ensuring permissions on /etc/crontab are configured
+  file:
+    path: /etc/crontab
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Ensuring at/cron is restricted to authorized users
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_file:
+    - deny_path
+   
+
+- name: Ensuring at/cron is restricted to authorized users
+  file:
+    path: /etc/ "{{ item }}"
+    state: touch
+    owner: root
+    group: root
+    mode: 0600
+  with_file:
+    - allow_path
+...     
+

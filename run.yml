@@ -1,0 +1,5 @@
+---
+- name: Executing various ansible roles.
+  hosts: all
+  roles: 
+    - cron_at 

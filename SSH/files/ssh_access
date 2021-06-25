@@ -1,0 +1,6 @@
+#ADD YOU USERS AND GROUPS ACCORDING TO YOUR REQUIREMENT
+
+AllowUsers <userlist>
+AllowGroups <grouplist>
+DenyUsers <userlist>
+DenyGroups <grouplist>

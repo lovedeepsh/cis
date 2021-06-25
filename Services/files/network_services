@@ -1,0 +1,7 @@
+rsh.socket
+rlogin.socket
+rexec.socket
+ntalk
+telnet.socket
+tftp.socket
+rsyncd

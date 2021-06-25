@@ -1,0 +1,12 @@
+---
+# vars file for PAM
+pwquality_conf: /etc/security/pwquality.conf
+login_defs: /etc/login.defs
+days: 30
+GID: 0
+admin_user: root
+securetty: /etc/securetty
+su: /etc/pam.d/su
+paswd_auth: /etc/pam.d/password-auth
+system_auth: /etc/pam.d/system-auth
+...

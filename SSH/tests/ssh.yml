@@ -1,0 +1,48 @@
+---
+- name: ssh configuration
+  hosts: node1
+  tasks:
+  - name: Ensure permissions on /etc/ssh/sshd_config are configured
+    file:
+      path: /etc/ssh/sshd_config
+      owner: root
+      group: root
+      mode: 0600
+  - name: Ensure SSH Protocol is set to 2
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      line: Protocol 2 
+      insertafter: EOF
+      state: present  
+  - name: Ensure SSH LogLevel is set
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^(.*)#LogLevel INFO (.*)$'
+      line: LogLevel INFO  
+  - name: Ensure SSH root login is disabled
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^(.*)#PermitRootLogin yes(.*)$'
+      line: PermitRootLogin no
+  - name: Ensure SSH Idle Timeout Interval is configured
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^(.*)#ClientAliveInterval 0(.*)$'
+      line: ClientAliveInterval 300
+  - name: Ensure SSH Idle Timeout Interval is configured
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^(.*)#ClientAliveCountMax 3(.*)$'
+      line: ClientAliveCountMax 0
+  - name: Ensure SSH access is limited
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      line: "{{ item }}"
+      insertafter: EOF
+      state: present
+    with_items:          
+      - AllowUsers <userlist>
+      - AllowGroups <grouplist>
+      - DenyUsers <userlist>
+      - DenyGroups <grouplist>
+...

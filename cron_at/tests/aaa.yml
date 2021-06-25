@@ -1,0 +1,32 @@
+---
+ - name: Access, Authentication and Authorization
+   hosts: node1
+   tasks:
+     - name: Ensuring cron daemon is enabled
+       service:
+          name: crond
+          enabled: no
+     - name: Ensuring permissions on /etc/crontab are configured
+       file:
+          path: /etc/crontab
+          owner: root
+          group: root
+          mode: 0600
+     - name: Ensuring at/cron is restricted to authorized users
+       file:
+         path: "{{ item }}"
+         state: absent
+       with_items:
+         - /etc/cron.deny
+         - /etc/at.deny
+     - name: Ensuring at/cron is restricted to authorized users
+       file:
+         path: "{{ item }}"
+         state: touch
+         owner: root
+         group: root
+         mode: 0600
+       with_items:
+         - /etc/cron.allow
+         - /etc/at.allow
+...     

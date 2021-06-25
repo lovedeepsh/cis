@@ -1,0 +1,25 @@
+---
+- name: Ensuring chrony is installed.
+  yum:
+     name: chrony
+     state: latest
+
+- name: Ensuring that chrony are configured
+  lineinfile:
+    path: "{{ chrony }}"
+    regexp: "{{ item[0] }}"
+    line: "{{ item[1] }}"
+    insertafter: EOF
+    state: present
+  with_file:
+     - pool
+     - pool_server
+
+- name: Finalizing configuration of ntp
+  lineinfile:
+    path: "{{ chronyd }}"
+    line: OPTIONS="-u chrony"
+    insertafter: EOF
+    state: present
+...
+

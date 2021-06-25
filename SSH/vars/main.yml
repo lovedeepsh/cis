@@ -1,0 +1,6 @@
+---
+# vars file for SSH
+sshd_config: /etc/ssh/sshd_config
+
+
+

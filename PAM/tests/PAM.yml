@@ -1,0 +1,67 @@
+---
+- name: Ensuring PAM Security
+  hosts: node1
+  tasks:
+  - name: Ensure pam is installed
+    yum:
+       name: pam
+       state: latest
+
+  - name: Ensure password creation requirements are configured
+    lineinfile:
+       path: /etc/security/pwquality.conf
+       line: "{{ item }}"
+       insertafter: EOF
+       state: present
+    with_items:
+       - minlen = 14
+       - dcredit = -1
+       - ucredit = -1
+       - ocredit = -1
+       - lcredit = -1
+
+  - name: Ensure lockout for failed password attempts is configured
+    lineinfile:
+      path: /etc/pam.d/password-auth
+      line: "{{ item }}"
+      insertafter: EOF
+      state: present
+    with_file:
+      - password_auth1
+ 
+  - name: Ensure password reuse is limited
+    lineinfile:
+    path: /etc/pam.d/system-auth
+    line: "{{ item }}"
+    insertafter: EOF
+    state: present
+  with_file:
+    - password_auth1
+
+  - name: Ensure password expiration is 365 days or less
+    lineinfile:
+       path: /etc/login.defs
+       regexp: '^(.*)PASS_MAX_DAYS   99999(.*)$'
+       line: PASS_MAX_DAYS   365 
+
+  - name: Ensure inactive password lock is 30 days or less
+    shell: useradd -D -f 30
+
+  - name: Ensure default group for the root account is GID 0
+    shell: usermod -g 0 root
+
+  - name: Ensure root login is restricted to system console
+    lineinfile:
+       path: /etc/securetty
+       regexp: "{{ item }}"
+       state: absent
+    with_items:
+       - vc/1
+
+  - name: Ensure access to the su command is restricted  
+    lineinfile:
+       path: /etc/pam.d/su
+       line: auth required pam_wheel.so
+       insertafter: EOF
+       state: present
+...

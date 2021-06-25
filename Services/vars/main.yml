@@ -1,0 +1,25 @@
+---
+# vars file for Services
+#pool: |
+#server 0.centos.pool.ntp.org iburst
+#server 1.centos.pool.ntp.org iburst
+#server 2.centos.pool.ntp.org iburst
+#server 3.centos.pool.ntp.org iburst
+
+#restrict: | 
+#restrict -4 default kod nomodify notrap nopeer noquery
+#restrict -6 default kod nomodify notrap nopeer noquery
+
+#pool_server: |
+#server <remote-server>
+#server <remote-server>
+#server <remote-server>
+#server <remote-server>
+
+ntp: /etc/ntp.conf
+
+sysconfig: /etc/sysconfig/ntpd
+
+chrony: /etc/chrony.conf
+
+chronyd: /etc/sysconfig/chronyd
